@@ -1,12 +1,7 @@
 import React, {useCallback} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableNativeFeedback,
-} from 'react-native';
+import {View, Image, StyleSheet, TouchableNativeFeedback} from 'react-native';
 import {colors} from '../lib/K';
+import RText from './Text';
 
 export default function Channel({index, name, url, logo, onPress}) {
   const pressed = useCallback(() => {
@@ -17,7 +12,7 @@ export default function Channel({index, name, url, logo, onPress}) {
       <View style={styles.container}>
         {logo && <Image style={styles.logo} source={{url: logo}} />}
 
-        <Text style={styles.name}>{name}</Text>
+        <RText style={styles.name}>{name}</RText>
       </View>
     </TouchableNativeFeedback>
   );
@@ -34,7 +29,7 @@ const styles = StyleSheet.create({
   logo: {},
   name: {
     textAlign: 'center',
-    fontSize: 32,
+    fontSize: 24,
     color: colors.text,
   },
 });

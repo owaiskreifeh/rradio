@@ -1,30 +1,15 @@
-import useAxios from 'axios-hooks';
-import React, {useCallback, useEffect, useState} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  ScrollView,
-  Image,
-} from 'react-native';
-import parser from 'iptv-playlist-parser';
-
-import t from '../translate/translate';
+import React, {useCallback, useState} from 'react';
+import {View, StyleSheet, ScrollView, Image} from 'react-native';
 import {colors} from '../lib/K';
 
 import Channel from '../components/Channel';
 import Player from '../components/Player';
 
 import LogoBlack from '../assets/logo/rr-logo_black.png';
+import ChannelList from './playlist';
+import RText from '../components/Text';
 
 export default function Radio() {
-  const [{data, loading, error}, refetch] = useAxios(
-    'https://raw.githubusercontent.com/klarman/combust_media_playlists/b571c96e77b68dde1dc9147ae2792093fd510915/radio_stations/json/jo.json',
-  );
-  const [channels, setChannels] = useState(null);
-  const [currentChannel, setCurrentChannel] = useState(null);
-
   const onChannelPress = useCallback(
     index => {
       setCurrentChannel(index);
@@ -32,40 +17,21 @@ export default function Radio() {
     [setCurrentChannel],
   );
 
-  useEffect(() => {
-    if (data) {
-      const rawChannels = parser.parse(data);
-      setChannels(
-        rawChannels.items.map((item, index) => {
-          return {
-            index,
-            name: item.name,
-            url: item.url,
-            onPress: onChannelPress,
-          };
-        }),
-      );
-    }
-  }, [data, onChannelPress]);
-
+  const [channels] = useState(
+    ChannelList.map((ch, i) => ({
+      name: ch.ar,
+      index: i,
+      url: ch.url,
+      onPress: onChannelPress,
+    })),
+  );
+  const [currentChannel, setCurrentChannel] = useState(0);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Image source={LogoBlack} style={styles.logo} />
-        <Text style={styles.brand}>Rahmeh Radio</Text>
+        <RText style={styles.brand}>Rahmeh Radio</RText>
       </View>
-      {!!loading && (
-        <View style={styles.loading}>
-          <Text>{t('loading')}</Text>
-          <ActivityIndicator animating />
-        </View>
-      )}
-
-      {!!error && (
-        <View style={styles.error}>
-          <Text>{t('Something went wrong')}</Text>
-        </View>
-      )}
 
       {!!channels && (
         <ScrollView>
@@ -77,7 +43,7 @@ export default function Radio() {
         </ScrollView>
       )}
 
-      {!!currentChannel && (
+      {currentChannel >= 0 && (
         <View style={styles.playerContainer}>
           <Player channel={channels[currentChannel]} />
         </View>
@@ -115,9 +81,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   playerContainer: {
-    height: '30%',
+    height: '35%',
     padding: 10,
-    borderRadius: 20,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
     backgroundColor: colors.accent2,
   },
 });

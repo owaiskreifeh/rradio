@@ -2,7 +2,7 @@ export default [
   {
     name: 'Husna FM',
     ar: 'حسنى',
-    url: 'http://s2.voscast.com:10444/stream1534585521293/1',
+    url: 'https://s2.voscast.com:10445/stream',
   },
   {
     name: 'yaqeen',
@@ -16,7 +16,7 @@ export default [
   },
   {
     name: 'Hayat FM',
-    ar: 'حياؤ اف ام',
+    ar: 'حياة اف ام',
     url: 'http://104.194.9.142:8302/live',
   },
   {

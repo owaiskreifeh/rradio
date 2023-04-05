@@ -4,6 +4,7 @@ import Video from 'react-native-video';
 
 import {colors} from '../lib/K';
 import t from '../translate/translate';
+import RText from './Text';
 
 export default function Player({channel}) {
   const player = useRef(null);
@@ -15,13 +16,14 @@ export default function Player({channel}) {
 
   useEffect(() => {
     setStatus('loading');
+    setPaused(false);
   }, [channel]);
 
   const loaded = useCallback(() => {
     setStatus('playing');
   }, []);
 
-  const errored = useCallback((error) => {
+  const errored = useCallback(error => {
     setStatus('error');
     console.error('player err', error);
   }, []);
@@ -32,8 +34,10 @@ export default function Player({channel}) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.playing}>{t(status)}</Text>
-      <Text style={styles.name}>{channel.name.trim()}</Text>
+      <RText style={styles.playing}>
+        {t(status === 'playing' ? 'current_channel' : status)}
+      </RText>
+      <RText style={styles.name}>{channel.name.trim()}</RText>
       <Video
         ref={player}
         paused={paused}
@@ -42,10 +46,13 @@ export default function Player({channel}) {
         onBuffer={buffering}
         onLoad={loaded}
         onError={errored}
+        playInBackground={true}
+        playWhenInactive={true}
+        ignoreSilentSwitch="ignore"
       />
       <TouchableOpacity onPress={playPause}>
         <View style={styles.btn}>
-          <Text style={styles.btnTxt}>{t(paused ? 'PLAY' : 'PAUSE')}</Text>
+          <RText style={styles.btnTxt}>{t(paused ? 'PLAY' : 'PAUSE')}</RText>
         </View>
       </TouchableOpacity>
     </View>
@@ -54,18 +61,17 @@ export default function Player({channel}) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10,
     flex: 1,
     borderRadius: 5,
     backgroundColor: colors.accent2,
   },
   name: {
     color: colors.text,
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 32,
   },
   playing: {
     color: colors.text,
+    fontSize: 24,
   },
   btn: {
     borderRadius: 500,
@@ -75,6 +81,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 5,
   },
   btnTxt: {
     color: colors.text,
